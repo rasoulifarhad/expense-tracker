@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { IExpense } from '../expense';
 
 @Component({
   selector: 'app-expense-list',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class ExpenseListComponent {
 
+  @Input() expenses: IExpense[] = [];
+
+  @Input() showButton = true;
 }
