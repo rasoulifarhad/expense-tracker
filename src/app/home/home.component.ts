@@ -33,9 +33,13 @@ export class HomeComponent {
   currentMonthSpending: Spending = { amount: 300, month: 'July' };
   lastMonthSpending: Spending = { amount: 44, month: 'August' };
 
-  private _expenseService: ExpenseService;
-  constructor() {
-    this._expenseService = new ExpenseService();
-    this.expenses = this._expenseService.getExpenses();
+  // private _expenseService: ExpenseService;
+  // constructor() {
+  //   this._expenseService = new ExpenseService();
+  //   this.expenses = this._expenseService.getExpenses();
+  // }
+
+  constructor(private expenseService: ExpenseService) {
+    this.expenses = expenseService.getExpenses();
   }
 }
