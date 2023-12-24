@@ -12,6 +12,7 @@ export class ExpenseHttpService {
   constructor(private http: HttpClient) {}
 
   getExpenses(date: string): Observable<IExpense[]> {
+    console.log('Expenses for: ', date);
     return this.http.get<IExpense[]>(this.url).pipe(
       map((expenses) => {
         return expenses.filter((e) => e.date.includes(date));
@@ -20,6 +21,7 @@ export class ExpenseHttpService {
   }
 
   getTotalSpending(date: string): Observable<number> {
+    console.log('Total Expenses for: ', date);
     return this.getExpenses(date).pipe(
       map((expenses) => {
         return expenses.reduce((per, cur) => per + cur.amount, 0);

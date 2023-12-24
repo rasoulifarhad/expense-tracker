@@ -63,15 +63,17 @@ export class HomeComponent implements OnInit {
     const thisMonth = new Date();
     const lastMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth() - 1);
 
-    this.expenseHttpService.getExpenses(this.getPeriod(thisMonth)).subscribe(
-      expenses => {
+    this.expenseHttpService.getExpenses(this.getPeriod(thisMonth)).subscribe({
+      next: (expenses) => {
         this.expenses = expenses;
+        console.log('expenses: ', expenses);
       },
-      error => {
+      error: (error) => {
         console.log('Error retrieving expenses');
         console.error(error);
-      }
-    );
+      },
+      complete: () => console.log('complete')
+    });
 
     this.expenseHttpService.getTotalSpending(this.getPeriod(thisMonth))
       .subscribe(amount => {
