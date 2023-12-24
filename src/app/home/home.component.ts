@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IExpense } from '../expenses/expense';
 import { Spending } from '../expenses/spending';
 import { ExpenseService } from '../expenses/expense.service';
+import { ExpenseHttpService } from '../expenses/expense-http.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   expenses: IExpense[];
 
@@ -39,7 +40,59 @@ export class HomeComponent {
   //   this.expenses = this._expenseService.getExpenses();
   // }
 
-  constructor(private expenseService: ExpenseService) {
+  constructor(private expenseService: ExpenseService, private expenseHttpService: ExpenseHttpService) {
     this.expenses = expenseService.getExpenses();
+  }
+
+  ngOnInit(): void {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    const thisMonth = new Date();
+    const lastMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth() - 1);
+
+    this.expenseHttpService.getExpenses(this.getPeriod(thisMonth)).subscribe(
+      expenses => {
+        this.expenses = expenses;
+      },
+      error => {
+        console.log('Error retrieving expenses');
+        console.error(error);
+      }
+    );
+
+    this.expenseHttpService.getTotalSpending(this.getPeriod(thisMonth))
+      .subscribe(amount => {
+        this.currentMonthSpending = {
+          month: months[thisMonth.getMonth()],
+          amount
+        }
+      });
+
+    this.expenseHttpService.getTotalSpending(this.getPeriod(lastMonth))
+      .subscribe(amount => {
+        this.lastMonthSpending = {
+          month: months[lastMonth.getMonth()],
+          amount
+        }
+      });
+
+  }
+
+  getPeriod(date: Date): string {
+    const period = date.toJSON().split("-");
+    return period[0] + "-" + period[1];
   }
 }
